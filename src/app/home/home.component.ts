@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { marked } from 'marked';
 import { tap } from 'rxjs';
 
@@ -15,6 +16,7 @@ export class HomeComponent implements OnInit {
     @ViewChild('markdown', { static: true }) private markdown!: ElementRef;
 
     private httpClient: HttpClient = inject(HttpClient);
+    private destroyRef = inject(DestroyRef);
 
     public async ngOnInit() {
         const markdownElement = this.markdown.nativeElement as HTMLDivElement;
@@ -24,7 +26,8 @@ export class HomeComponent implements OnInit {
             .pipe(
                 tap(async (content: string) => {
                     markdownElement.innerHTML = await marked.parse(content);
-                })
+                }),
+                takeUntilDestroyed(this.destroyRef)
             )
             .subscribe();
     }

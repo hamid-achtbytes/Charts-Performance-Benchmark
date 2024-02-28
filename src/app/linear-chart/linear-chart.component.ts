@@ -16,9 +16,8 @@ export class LinearChartComponent implements AfterViewInit {
 
     private linearChartDataService = inject(LinearChartDataService);
 
-    private config: ChartConfiguration = {
+    private config: Partial<ChartConfiguration> = {
         type: 'line',
-        data: this.linearChartDataService.getChartData(10, 100),
         options: {
             elements: { point: { radius: 0 } },
             responsive: true,
@@ -59,13 +58,6 @@ export class LinearChartComponent implements AfterViewInit {
     }
 
     public ngAfterViewInit(): void {
-        console.time('Chart render time');
-
-        const context = this.chartElement.nativeElement.getContext('2d');
-        const _ = new Chart(context, this.config);
-
-        console.timeEnd('Chart render time');
-
         // Activate web worker, but chart will not be responsive anymore
         // if (typeof Worker !== 'undefined') {
         //     const canvas = this.chartElement.nativeElement as HTMLCanvasElement;
@@ -73,5 +65,17 @@ export class LinearChartComponent implements AfterViewInit {
         //     const worker = new Worker(new URL('./linear-chart.worker.ts', import.meta.url));
         //     worker.postMessage({ canvas: offscreenCanvas, config: this.config }, [offscreenCanvas]);
         // }
+    }
+
+    public displayChart(seriesCount: any = 10, dataPointsCount: any = 1000): void {
+        console.time('Chart render time');
+
+        const config = { ...this.config, data: this.linearChartDataService.getChartData(seriesCount ?? 10, dataPointsCount ?? 100) } as ChartConfiguration;
+        const canvas = this.chartElement.nativeElement as HTMLCanvasElement;
+        const context = canvas.getContext('2d');
+        context!.clearRect(0, 0, canvas.width, canvas.height);
+        const _ = new Chart(context!, config);
+
+        console.timeEnd('Chart render time');
     }
 }
