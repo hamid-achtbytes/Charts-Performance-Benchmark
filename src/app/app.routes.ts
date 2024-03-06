@@ -4,5 +4,5 @@ import { ChartjsLinearChartComponent } from './chart.js/linear-chart/linear-char
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
-    { path: 'linear-chart', component: ChartjsLinearChartComponent },
+    { path: 'cahrtjs-linear-chart', component: ChartjsLinearChartComponent },
 ];
