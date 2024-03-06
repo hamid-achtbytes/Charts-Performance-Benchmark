@@ -1,13 +1,13 @@
-# Chart.js Performance Benchmark
+# Charts Performance Benchmark
 
-This sample project is designed to help you evaluate the performance of Chart.js under various conditions. It allows you to test different data sizes and rendering options to understand their impact on rendering speed and user experience.
+This sample project is designed to help you evaluate the performance of Chart.js and Apache ECharts libraries under various conditions. It allows you to test different data sizes and rendering options to understand their impact on rendering speed and user experience.
 
 ## Getting Started
 
  1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/hamid-achtbytes/Chart.js-Performance-Benchmark.git
+    git clone https://github.com/hamid-achtbytes/Charts-Performance-Benchmark.git
     ```
 
  2. **Install dependencies:**

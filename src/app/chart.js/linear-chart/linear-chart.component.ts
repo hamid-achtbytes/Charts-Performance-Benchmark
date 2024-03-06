@@ -1,21 +1,27 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { BarController, BarElement, CategoryScale, Chart, ChartConfiguration, Decimation, Filler, Legend, LineController, LineElement, LinearScale, PointElement, Scale, Title, Tooltip } from 'chart.js';
 import { LinearChartDataService } from './services/linear-chart-data.service';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-linear-chart',
     standalone: true,
-    imports: [],
+    imports: [ReactiveFormsModule],
     providers: [LinearChartDataService],
     templateUrl: './linear-chart.component.html',
     styleUrl: './linear-chart.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LinearChartComponent implements AfterViewInit {
+export class ChartjsLinearChartComponent implements AfterViewInit {
     @ViewChild('chart', { static: true }) private chartElement: ElementRef = null!;
 
     private linearChartDataService = inject(LinearChartDataService);
     private chart?: Chart;
+
+    public formGroup = new FormGroup({
+        seriesCount: new FormControl<number>(10, [Validators.required, Validators.min(1), Validators.max(100)]),
+        dataPointsCount: new FormControl<number>(100, [Validators.required, Validators.min(1), Validators.max(100000)]),
+    });
 
     private config: Partial<ChartConfiguration> = {
         type: 'line',
@@ -68,11 +74,14 @@ export class LinearChartComponent implements AfterViewInit {
         // }
     }
 
-    public displayChart(seriesCount: any = 10, dataPointsCount: any = 1000): void {
+    public displayChart(): void {
         console.time('Chart render time');
 
         this.chart?.destroy();
-        const config = { ...this.config, data: this.linearChartDataService.getChartData(seriesCount ?? 10, dataPointsCount ?? 100) } as ChartConfiguration;
+
+        const { seriesCount, dataPointsCount } = this.formGroup.value;
+
+        const config = { ...this.config, data: this.linearChartDataService.getChartData(seriesCount!, dataPointsCount!) } as ChartConfiguration;
         const canvas = this.chartElement.nativeElement as HTMLCanvasElement;
         const context = canvas.getContext('2d');
         this.chart = new Chart(context!, config);

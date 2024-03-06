@@ -10,5 +10,5 @@ import { RouterModule, RouterOutlet } from '@angular/router';
     styleUrl: './app.component.scss',
 })
 export class AppComponent {
-    title = 'Chart.js Performance Benchmark';
+    title = 'Charts Performance Benchmark';
 }

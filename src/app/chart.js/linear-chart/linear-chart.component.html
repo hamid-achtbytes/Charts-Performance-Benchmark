@@ -1,0 +1,22 @@
+<form class="m-3 needs-validation" [formGroup]="formGroup">
+    <div class="input-group input-group-sm mb-3">
+        <span class="input-group-text input-group-text-width" id="series-count">Series count </span>
+        <input formControlName="seriesCount" type="number" class="form-control" aria-label="Series count" aria-describedby="series-count" min="1" max="100" [class.is-invalid]="formGroup.controls.seriesCount.invalid" />
+        <div class="invalid-feedback" [class.d-block]="formGroup.controls.seriesCount.invalid">This field is required and should be between 1 and 100.</div>
+    </div>
+
+    <div class="input-group input-group-sm mb-3">
+        <span class="input-group-text input-group-text-width" id="data-points-count">Data points count</span>
+        <input formControlName="dataPointsCount" type="number" class="form-control" aria-label="Series count" aria-describedby="data-points-count" min="1" max="100000" [class.is-invalid]="formGroup.controls.dataPointsCount.invalid" />
+        <div class="invalid-feedback" [class.d-block]="formGroup.controls.dataPointsCount.invalid">This field is required and should be between 1 and 100000.</div>
+    </div>
+
+    <hr />
+    <button type="button" class="btn btn-primary" (click)="displayChart()" [disabled]="formGroup.invalid">Display chart</button>
+</form>
+
+<div class="position-relative chart-container">
+    <div class="position-absolute wrapper">
+        <canvas #chart></canvas>
+    </div>
+</div>
