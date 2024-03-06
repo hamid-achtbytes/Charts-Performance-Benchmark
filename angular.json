@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "chartjs": {
+        "charts": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -56,10 +56,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "buildTarget": "chartjs:build:production"
+                            "buildTarget": "charts:build:production"
                         },
                         "development": {
-                            "buildTarget": "chartjs:build:development"
+                            "buildTarget": "charts:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -67,7 +67,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "buildTarget": "chartjs:build"
+                        "buildTarget": "charts:build"
                     }
                 },
                 "test": {
