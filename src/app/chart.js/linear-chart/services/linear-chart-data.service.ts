@@ -20,6 +20,7 @@ export class LinearChartDataService {
                 data,
                 borderColor: COLOR_SCHEME[index],
                 backgroundColor: COLOR_SCHEME[index],
+                cubicInterpolationMode: 'monotone',
             });
         }
 

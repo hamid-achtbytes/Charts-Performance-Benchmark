@@ -5,7 +5,7 @@ export const chartConfiguration: Partial<ChartConfiguration> = {
     options: {
         elements: { point: { radius: 0 } },
         responsive: true,
-        animation: false,
+        animation: { duration: 1 },
         line: { datasets: { showLine: false } },
         plugins: {
             title: {
