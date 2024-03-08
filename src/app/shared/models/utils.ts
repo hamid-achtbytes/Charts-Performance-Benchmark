@@ -1,3 +1,7 @@
+export const random = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min) + min);
+};
+
 export const CHART_COLORS = {
     red: 'rgb(255, 99, 132)',
     orange: 'rgb(255, 159, 64)',

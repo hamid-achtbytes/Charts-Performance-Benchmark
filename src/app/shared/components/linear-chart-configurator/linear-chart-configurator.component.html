@@ -13,29 +13,23 @@
 
     <hr />
     <div class="d-flex flex-row align-items-center justify-content-between">
-        @if (inProgress()) {
-        <button type="button" class="btn btn-secondary" disabled><img src="assets/images/loading.png" width="20" /> Generate chart...</button>
+        @if (inProgress) {
+        <button type="button" class="btn btn-secondary" disabled><img src="assets/images/Ajax-loader.gif" width="20" /> Generate...</button>
         } @else {
-        <button type="button" class="btn btn-primary" (click)="displayChart()" [disabled]="formGroup.invalid">Display chart</button>
+        <button type="button" class="btn btn-primary" (click)="onChartDataChange()" [disabled]="formGroup.invalid">Generate</button>
         }
 
         <ng-container>
-            @if (timeTakenToGenerate() > 0 && !inProgress()) {
+            @if (timeTakenToGenerate > 0 && !inProgress) {
 
             <div class="p-2">
-                Time taken to generate: <strong>{{ timeTakenToGenerate() | number : '1.1-1' }}</strong> ms
+                Time taken to generate: <strong>{{ timeTakenToGenerate | number : '1.1-1' }}</strong> ms
             </div>
             <div class="p-2">
-                Total telemetry points: <strong>{{ totalDataPoints() }}</strong>
+                Total telemetry points: <strong>{{ totalDataPoints }}</strong>
             </div>
 
             }
         </ng-container>
     </div>
 </form>
-
-<div class="position-relative chart-container">
-    <div class="position-absolute wrapper">
-        <canvas #chart></canvas>
-    </div>
-</div>
