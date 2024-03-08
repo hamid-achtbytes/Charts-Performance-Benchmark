@@ -1,8 +1,7 @@
 import { Routes } from '@angular/router';
+import { ChartjsLinearChartComponent } from './chartjs-linear-chart/chartjs-linear-chart.component';
+import { EChartsLinearChartComponent } from './echarts-linear-chart/echarts-linear-chart.component';
 import { HomeComponent } from './home/home.component';
-import { ChartjsLinearChartComponent } from './chart.js/linear-chart/linear-chart.component';
-import { LineChart } from 'echarts/charts';
-import { EChartsLinearChartComponent } from './ECharts/linear-chart/linear-chart.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },

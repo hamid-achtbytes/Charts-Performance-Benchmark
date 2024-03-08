@@ -1,7 +1,7 @@
 import { ChartData } from 'chart.js';
-import { COLOR_SCHEME } from '../models/utils';
+import { random, COLOR_SCHEME } from '../../shared/models/utils';
 
-export class LinearChartDataService {
+export class ChartjsLinearChartDataService {
     public getChartData(seriesCount: number, dataPointsCount: number): ChartData {
         const chartData: any = { datasets: [] };
 
@@ -10,7 +10,7 @@ export class LinearChartDataService {
 
             for (let j = 0; j < dataPointsCount; j++) {
                 data.push({
-                    y: this.random(10, 200),
+                    y: random(10, 200),
                     x: j.toString(),
                 });
             }
@@ -25,9 +25,5 @@ export class LinearChartDataService {
         }
 
         return chartData;
-    }
-
-    private random(min: number, max: number) {
-        return Math.floor(Math.random() * (max - min) + min);
     }
 }

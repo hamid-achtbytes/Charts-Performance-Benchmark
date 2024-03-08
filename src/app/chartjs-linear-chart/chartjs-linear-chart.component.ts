@@ -3,24 +3,24 @@ import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, ViewChild, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CategoryScale, Chart, ChartConfiguration, Decimation, Filler, Legend, LineController, LineElement, LinearScale, PointElement, Title, Tooltip } from 'chart.js';
 import { tap, timer } from 'rxjs';
-import { IChartDataConfig } from '../../shared/models/chart-data-config';
-import { chartConfiguration } from './models/chart-configuration';
-import { LinearChartDataService } from './services/linear-chart-data.service';
-import { ChartConfiguratorComponent } from '../../shared/components/chart-configurator/chart-configurator.component';
+import { LinearChartConfiguratorComponent } from '../shared/components/linear-chart-configurator/linear-chart-configurator.component';
+import { IChartConfig } from '../shared/models/chart-config';
+import { chartConfiguration } from './models/chartjs-configuration';
+import { ChartjsLinearChartDataService } from './services/chartjs-linear-chart-data.service';
 
 @Component({
-    selector: 'app-linear-chart',
+    selector: 'app-chartjs-linear-chart',
     standalone: true,
-    imports: [CommonModule, ChartConfiguratorComponent],
-    providers: [LinearChartDataService],
-    templateUrl: './linear-chart.component.html',
-    styleUrl: './linear-chart.component.scss',
+    imports: [CommonModule, LinearChartConfiguratorComponent],
+    providers: [ChartjsLinearChartDataService],
+    templateUrl: './chartjs-linear-chart.component.html',
+    styleUrl: './chartjs-linear-chart.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChartjsLinearChartComponent {
     @ViewChild('chart', { static: true }) private chartElement: ElementRef = null!;
 
-    private linearChartDataService = inject(LinearChartDataService);
+    private linearChartDataService = inject(ChartjsLinearChartDataService);
     private chart?: Chart;
     private destroyRef = inject(DestroyRef);
 
@@ -32,8 +32,8 @@ export class ChartjsLinearChartComponent {
         Chart.register(CategoryScale, LineController, LinearScale, PointElement, LineElement, Decimation, Filler, Legend, Title, Tooltip);
     }
 
-    public displayChart(chartDataConfig: IChartDataConfig): void {
-        const { seriesCount, dataPointsCount } = chartDataConfig;
+    public displayChart(chartConfig: IChartConfig): void {
+        const { seriesCount, dataPointsCount } = chartConfig;
 
         this.inProgress.set(true);
         const start = performance.now();

@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IChartDataConfig } from '../../models/chart-data-config';
+import { IChartConfig } from '../../models/chart-config';
 
 @Component({
-    selector: 'app-chart-configurator',
+    selector: 'app-linear-chart-configurator',
     standalone: true,
     imports: [ReactiveFormsModule, CommonModule],
-    templateUrl: './chart-configurator.component.html',
-    styleUrl: './chart-configurator.component.scss',
+    templateUrl: './linear-chart-configurator.component.html',
+    styleUrl: './linear-chart-configurator.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChartConfiguratorComponent {
+export class LinearChartConfiguratorComponent {
     public formGroup = new FormGroup({
         seriesCount: new FormControl<number>(10, [Validators.required, Validators.min(1), Validators.max(100)]),
         dataPointsCount: new FormControl<number>(100, [Validators.required, Validators.min(1), Validators.max(1000000)]),
@@ -21,7 +21,7 @@ export class ChartConfiguratorComponent {
     @Input({ required: true }) public timeTakenToGenerate!: number;
     @Input({ required: true }) public totalDataPoints!: number;
 
-    @Output() public chartDataChange = new EventEmitter<IChartDataConfig>();
+    @Output() public chartDataChange = new EventEmitter<IChartConfig>();
 
     public onChartDataChange(): void {
         if (this.formGroup.invalid) {

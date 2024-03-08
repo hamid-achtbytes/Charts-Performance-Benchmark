@@ -1,0 +1,6 @@
+<app-linear-chart-configurator (chartDataChange)="displayChart($event)" [inProgress]="inProgress()" [timeTakenToGenerate]="timeTakenToGenerate()" [totalDataPoints]="totalDataPoints()"></app-linear-chart-configurator>
+<div class="position-relative chart-container">
+    <div class="position-absolute wrapper">
+        <canvas #chart></canvas>
+    </div>
+</div>

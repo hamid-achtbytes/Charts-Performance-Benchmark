@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ChartjsLinearChartComponent } from './chartjs-linear-chart.component';
 
-import { ChartjsLinearChartComponent } from './linear-chart.component';
-
-describe('LinearChartComponent', () => {
+describe('ChartjsLinearChartComponent', () => {
     let component: ChartjsLinearChartComponent;
     let fixture: ComponentFixture<ChartjsLinearChartComponent>;
 

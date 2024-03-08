@@ -1,4 +1,4 @@
-export interface IChartDataConfig {
+export interface IChartConfig {
     seriesCount: number;
     dataPointsCount: number;
 }

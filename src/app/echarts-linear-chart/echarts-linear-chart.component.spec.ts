@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { EChartsLinearChartComponent } from './linear-chart.component';
+import { EChartsLinearChartComponent } from './echarts-linear-chart.component';
 
 describe('LinearChartComponent', () => {
     let component: EChartsLinearChartComponent;
