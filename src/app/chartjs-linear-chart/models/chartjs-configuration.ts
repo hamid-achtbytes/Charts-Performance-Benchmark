@@ -1,11 +1,10 @@
 import { ChartConfiguration } from 'chart.js';
 
-export const chartConfiguration: Partial<ChartConfiguration> = {
+export const chartjsLinearchartConfiguration: Partial<ChartConfiguration> = {
     type: 'line',
     options: {
         elements: { point: { radius: 0 } },
         responsive: true,
-        animation: { duration: 1 },
         line: { datasets: { showLine: false } },
         plugins: {
             title: {

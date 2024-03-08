@@ -1,26 +1,28 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, HostListener, ViewChild, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, HostListener, OnDestroy, ViewChild, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LineChart } from 'echarts/charts';
 import { GridComponent, LegendComponent, TitleComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { LabelLayout } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { timer, tap } from 'rxjs';
+import { tap, timer } from 'rxjs';
 import { LinearChartConfiguratorComponent } from '../shared/components/linear-chart-configurator/linear-chart-configurator.component';
 import { IChartConfig } from '../shared/models/chart-config';
-import { chartConfiguration } from './models/echarts-chart-configuration';
+import { EChartsLinearChartDataService } from './services/echarts-linear-chart-data.service';
 
 @Component({
     selector: 'app-echarts-linear-chart',
     standalone: true,
     imports: [LinearChartConfiguratorComponent],
+    providers: [EChartsLinearChartDataService],
     templateUrl: './echarts-linear-chart.component.html',
     styleUrl: './echarts-linear-chart.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EChartsLinearChartComponent {
+export class EChartsLinearChartComponent implements OnDestroy {
     @ViewChild('chartContainer', { static: true }) chartContainer: ElementRef = null!;
 
+    private linearChartDataService = inject(EChartsLinearChartDataService);
     private chart?: echarts.ECharts;
     private destroyRef = inject(DestroyRef);
 
@@ -32,14 +34,16 @@ export class EChartsLinearChartComponent {
         echarts.use([TitleComponent, TooltipComponent, GridComponent, LegendComponent, LineChart, LabelLayout, CanvasRenderer]);
     }
 
+    public ngOnDestroy(): void {
+        this.chart?.dispose();
+    }
+
     @HostListener('window:resize')
     private onResize(): void {
         this.chart?.resize();
     }
 
     public displayChart(chartConfig: IChartConfig): void {
-        const { seriesCount, dataPointsCount } = chartConfig;
-
         this.inProgress.set(true);
         const start = performance.now();
 
@@ -51,48 +55,19 @@ export class EChartsLinearChartComponent {
                     const chartContainer = this.chartContainer.nativeElement as HTMLDivElement;
                     this.chart = echarts.init(chartContainer, null, { renderer: 'canvas', useDirtyRect: false });
 
-                    const config = {
-                        ...chartConfiguration,
-                        series: [
-                            {
-                                data: [820, 932, 901, 934, 1290, 1330, 1320],
-                                type: 'line',
-                                smooth: true,
-                                name: 'Email',
-                            },
-                            {
-                                data: [620, 732, 701, 734, 1090, 1130, 1120],
-                                type: 'line',
-                                smooth: true,
-                                name: 'Union Ads',
-                            },
-                            {
-                                data: [320, 432, 401, 434, 590, 630, 620],
-                                type: 'line',
-                                smooth: true,
-                                name: 'Video Ads',
-                            },
-                            {
-                                data: [120, 232, 201, 234, 290, 330, 320],
-                                type: 'line',
-                                smooth: true,
-                                name: 'Direct',
-                            },
-                            {
-                                data: [820, 932, 901, 934, 1290, 1330, 1320],
-                                type: 'line',
-                                smooth: true,
-                                name: 'Search Engine',
-                            },
-                        ],
-                    };
+                    const chartOption = this.linearChartDataService.getChartOption(chartConfig);
 
-                    // Draw the chart
-                    this.chart.setOption(config);
+                    this.chart.setOption(chartOption);
 
-                    this.inProgress.set(false);
-                    this.totalDataPoints.set(seriesCount! * dataPointsCount!);
-                    this.timeTakenToGenerate.set(performance.now() - start);
+                    this.chart?.on('finished', () => {
+                        if (!this.inProgress()) {
+                            return;
+                        }
+
+                        this.inProgress.set(false);
+                        this.totalDataPoints.set(chartConfig!.seriesCount * chartConfig!.dataPointsCount);
+                        this.timeTakenToGenerate.set(performance.now() - start);
+                    });
                 }),
                 takeUntilDestroyed(this.destroyRef)
             )

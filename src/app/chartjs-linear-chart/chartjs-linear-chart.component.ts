@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, ViewChild, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, OnDestroy, ViewChild, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CategoryScale, Chart, ChartConfiguration, Decimation, Filler, Legend, LineController, LineElement, LinearScale, PointElement, Title, Tooltip } from 'chart.js';
 import { tap, timer } from 'rxjs';
 import { LinearChartConfiguratorComponent } from '../shared/components/linear-chart-configurator/linear-chart-configurator.component';
 import { IChartConfig } from '../shared/models/chart-config';
-import { chartConfiguration } from './models/chartjs-configuration';
+import { chartjsLinearchartConfiguration } from './models/chartjs-configuration';
 import { ChartjsLinearChartDataService } from './services/chartjs-linear-chart-data.service';
 
 @Component({
@@ -17,7 +17,7 @@ import { ChartjsLinearChartDataService } from './services/chartjs-linear-chart-d
     styleUrl: './chartjs-linear-chart.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChartjsLinearChartComponent {
+export class ChartjsLinearChartComponent implements OnDestroy {
     @ViewChild('chart', { static: true }) private chartElement: ElementRef = null!;
 
     private linearChartDataService = inject(ChartjsLinearChartDataService);
@@ -32,9 +32,11 @@ export class ChartjsLinearChartComponent {
         Chart.register(CategoryScale, LineController, LinearScale, PointElement, LineElement, Decimation, Filler, Legend, Title, Tooltip);
     }
 
-    public displayChart(chartConfig: IChartConfig): void {
-        const { seriesCount, dataPointsCount } = chartConfig;
+    public ngOnDestroy(): void {
+        this.chart?.destroy();
+    }
 
+    public displayChart(chartConfig: IChartConfig): void {
         this.inProgress.set(true);
         const start = performance.now();
 
@@ -43,14 +45,29 @@ export class ChartjsLinearChartComponent {
         timer(50)
             .pipe(
                 tap(() => {
-                    const config = { ...chartConfiguration, data: this.linearChartDataService.getChartData(seriesCount, dataPointsCount) } as ChartConfiguration;
+                    const config = {
+                        ...chartjsLinearchartConfiguration,
+                        options: {
+                            ...chartjsLinearchartConfiguration.options,
+                            animation: {
+                                duration: 1,
+                                onComplete: (chart) => {
+                                    if (!chart.initial || !this.inProgress()) {
+                                        return;
+                                    }
+
+                                    this.inProgress.set(false);
+                                    this.totalDataPoints.set(chartConfig!.seriesCount * chartConfig!.dataPointsCount!);
+                                    this.timeTakenToGenerate.set(performance.now() - start);
+                                },
+                            },
+                        },
+                        data: this.linearChartDataService.getChartData(chartConfig),
+                    } as ChartConfiguration;
+
                     const canvas = this.chartElement.nativeElement as HTMLCanvasElement;
                     const context = canvas.getContext('2d');
                     this.chart = new Chart(context!, config);
-
-                    this.inProgress.set(false);
-                    this.totalDataPoints.set(seriesCount! * dataPointsCount!);
-                    this.timeTakenToGenerate.set(performance.now() - start);
                 }),
                 takeUntilDestroyed(this.destroyRef)
             )

@@ -1,12 +1,13 @@
-import { ChartData } from 'chart.js';
-import { random, COLOR_SCHEME } from '../../shared/models/utils';
+import { ChartData, ChartDataset } from 'chart.js';
+import { IChartConfig } from '../../shared/models/chart-config';
+import { COLOR_SCHEME, random } from '../../shared/models/utils';
 
 export class ChartjsLinearChartDataService {
-    public getChartData(seriesCount: number, dataPointsCount: number): ChartData {
-        const chartData: any = { datasets: [] };
+    public getChartData({ seriesCount, dataPointsCount }: IChartConfig): ChartData {
+        const chartData: ChartData = { datasets: [] as ChartDataset[] };
 
         for (let index = 0; index < seriesCount; index++) {
-            const data = [];
+            const data: any = [];
 
             for (let j = 0; j < dataPointsCount; j++) {
                 data.push({

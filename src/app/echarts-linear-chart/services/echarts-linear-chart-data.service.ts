@@ -1,29 +1,37 @@
-import { ChartData } from 'chart.js';
+import { EChartsOption, SeriesOption } from 'echarts';
+import { IChartConfig } from '../../shared/models/chart-config';
 import { random } from '../../shared/models/utils';
+import { CHART_CONFIGURATION } from '../models/echarts-chart-configuration';
 
 export class EChartsLinearChartDataService {
-    public getChartData(seriesCount: number, dataPointsCount: number): ChartData {
-        const chartData: any = { datasets: [] };
+    public getChartOption({ seriesCount, dataPointsCount }: IChartConfig): EChartsOption {
+        const chartConfiguration: EChartsOption = CHART_CONFIGURATION;
+        const legendData: string[] = [];
+        const xAxisData: string[] = [];
+        const series: SeriesOption[] = [];
 
         for (let index = 0; index < seriesCount; index++) {
-            const data = [];
+            const seriesData: number[] = [];
+            const seriesName = `Dataset ${index + 1}`;
+            legendData.push(seriesName);
 
             for (let j = 0; j < dataPointsCount; j++) {
-                data.push({
-                    y: random(10, 200),
-                    x: j.toString(),
-                });
+                seriesData.push(random(10, 200));
+                if (xAxisData.length > dataPointsCount) {
+                    continue;
+                }
+
+                xAxisData.push(j.toString());
             }
 
-            // chartData.datasets!.push({
-            //     label: `Dataset ${index + 1}`,
-            //     data,
-            //     borderColor: COLOR_SCHEME[index],
-            //     backgroundColor: COLOR_SCHEME[index],
-            //     cubicInterpolationMode: 'monotone',
-            // });
+            series.push({ data: seriesData, type: 'line', smooth: true, name: seriesName });
         }
 
-        return chartData;
+        return {
+            ...chartConfiguration,
+            legend: { data: legendData },
+            xAxis: { type: 'category', data: xAxisData },
+            series,
+        };
     }
 }
