@@ -1,39 +1,4 @@
-<form class="m-3 needs-validation" [formGroup]="formGroup">
-    <div class="input-group input-group-sm mb-3">
-        <span class="input-group-text input-group-text-width" id="series-count">Series count </span>
-        <input formControlName="seriesCount" type="number" class="form-control" aria-label="Series count" aria-describedby="series-count" min="1" max="100" [class.is-invalid]="formGroup.controls.seriesCount.invalid" />
-        <div class="invalid-feedback" [class.d-block]="formGroup.controls.seriesCount.invalid">This field is required and should be between 1 and 100.</div>
-    </div>
-
-    <div class="input-group input-group-sm mb-3">
-        <span class="input-group-text input-group-text-width" id="data-points-count">Data points count</span>
-        <input formControlName="dataPointsCount" type="number" class="form-control" aria-label="Series count" aria-describedby="data-points-count" min="1" max="1000000" [class.is-invalid]="formGroup.controls.dataPointsCount.invalid" />
-        <div class="invalid-feedback" [class.d-block]="formGroup.controls.dataPointsCount.invalid">This field is required and should be between 1 and 1000000.</div>
-    </div>
-
-    <hr />
-    <div class="d-flex flex-row align-items-center justify-content-between">
-        @if (inProgress()) {
-        <button type="button" class="btn btn-secondary" disabled><img src="assets/images/loading.png" width="20" /> Generate chart...</button>
-        } @else {
-        <button type="button" class="btn btn-primary" (click)="displayChart()" [disabled]="formGroup.invalid">Display chart</button>
-        }
-
-        <ng-container>
-            @if (timeTakenToGenerate() > 0 && !inProgress()) {
-
-            <div class="p-2">
-                Time taken to generate: <strong>{{ timeTakenToGenerate() | number : '1.1-1' }}</strong> ms
-            </div>
-            <div class="p-2">
-                Total telemetry points: <strong>{{ totalDataPoints() }}</strong>
-            </div>
-
-            }
-        </ng-container>
-    </div>
-</form>
-
+<app-chart-configurator (chartDataChange)="displayChart($event)" [inProgress]="inProgress()" [timeTakenToGenerate]="timeTakenToGenerate()" [totalDataPoints]="totalDataPoints()"></app-chart-configurator>
 <div class="position-relative chart-container">
     <div class="position-absolute wrapper">
         <canvas #chart></canvas>
